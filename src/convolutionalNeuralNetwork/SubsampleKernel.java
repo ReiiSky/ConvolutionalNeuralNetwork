@@ -6,14 +6,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class SubsampleKernel {
+public class SubsampleKernel  implements Serializable{
+
+	private static final long serialVersionUID = -3382071696877307147L;
 	private double beta;
 	private double bias;
-	private int tag;
+	private String tag;
 	private double change;
 	
-	public SubsampleKernel(double beta,double bias,int tag){
+	public SubsampleKernel(double beta,double bias,String tag){
 		this.beta = beta;
 		this.bias = bias;
 		this.tag = tag;
@@ -36,7 +39,7 @@ public class SubsampleKernel {
 		this.bias = newBias;
 	}
 	
-	public int getTag(){
+	public String getTag(){
 		return this.tag;
 	}
 	
@@ -49,7 +52,7 @@ public class SubsampleKernel {
 	}
 	
 	public void writeToDiskSK(String path) throws FileNotFoundException, IOException{
-		String fileName = "SK" + this.tag;
+		String fileName = this.tag;
 		fileName = path + fileName + ".obj";
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
 		out.writeObject(this);
@@ -57,7 +60,7 @@ public class SubsampleKernel {
 	}
 	
 	public void readFromDiskHO(String path) throws FileNotFoundException, IOException, ClassNotFoundException{
-		String fileName = "SK" + this.tag;
+		String fileName = this.tag;
 		fileName = path + fileName + ".obj";
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
 		SubsampleKernel newRead = (SubsampleKernel)in.readObject();

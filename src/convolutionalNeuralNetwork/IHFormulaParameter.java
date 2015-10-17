@@ -22,6 +22,7 @@ public class IHFormulaParameter implements Serializable{
 		this.bias = bias;
 		this.index = index;
 		this.weight = new double[length];
+		this.change = new double[length];
 		if(paraSet != null){
 			for(int i = 0;i < length;i++){
 				weight[i] = paraSet[i];

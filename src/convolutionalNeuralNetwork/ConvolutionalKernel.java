@@ -15,14 +15,15 @@ public class ConvolutionalKernel implements Serializable{
 	private int height;
 	private double weight[][];
 	private double bias;
-	private int tag;
+	private String tag;
 	private double[][] change;
 	
-	public ConvolutionalKernel(int width,int height,double[][] weightSet,double bias,int tag){
+	public ConvolutionalKernel(int width,int height,double[][] weightSet,double bias,String tag){
 		this.bias = bias;
 		this.width = width;
 		this.height = height;
 		weight = new double[height][width];
+		change = new double[height][width];
 		for(int i = 0;i < height;i++){
 			for(int j = 0;j < width;j++){
 				this.weight[i][j] = weightSet[i][j];
@@ -33,8 +34,8 @@ public class ConvolutionalKernel implements Serializable{
 	    change = new double[height][width];
 	}
 	
-	public double getWeight(int row,int colomn){
-		return weight[row][colomn];
+	public double getWeight(int row,int column){
+		return weight[row][column];
 	}
 	
 	public double getBias(){
@@ -49,7 +50,7 @@ public class ConvolutionalKernel implements Serializable{
 		return height;
 	}
 	
-	public int getTag(){
+	public String getTag(){
 		return this.tag;
 	}
 	
@@ -70,7 +71,7 @@ public class ConvolutionalKernel implements Serializable{
 	}
 	
 	public void writeToDiskCK(String path) throws FileNotFoundException, IOException{
-		String fileName = "CK" + this.tag;
+		String fileName = this.tag;
 		fileName = path + fileName + ".obj";
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
 		out.writeObject(this);
@@ -78,7 +79,7 @@ public class ConvolutionalKernel implements Serializable{
 	}
 	
 	public void readFromDiskCK(String path) throws FileNotFoundException, IOException, ClassNotFoundException{
-		String fileName = "CK" + this.tag;
+		String fileName = this.tag;
 		fileName = path + fileName + ".obj";
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
 		ConvolutionalKernel newRead = (ConvolutionalKernel)in.readObject();

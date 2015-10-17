@@ -27,6 +27,24 @@ public class Maps {
 		}
 	}
 	
+	public double calculateConvolutionalPoint(int row,int column,ConvolutionalKernel ck){
+		double temp = 0;
+		for(int i = 0;i < 5;i++){
+			for(int j = 0;j < 5;j++){
+				temp += matrix[row-2+i][column-2+j] * ck.getWeight(i, j);
+			}
+		}
+		temp += temp + ck.getBias();
+		return temp;
+	}
+	
+	public double calculateSubsamplePoint(int row,int column,SubsampleKernel sk){
+		double temp = 0;
+		temp = (matrix[row][column] + matrix[row][column+1] + matrix[row+1][column] + matrix[row+1][column+1])/4;
+		temp  = temp * sk.getBeta() + sk.getBias();
+		return temp;
+	}
+	
 	public int getWidth(){
 		return width;
 	}

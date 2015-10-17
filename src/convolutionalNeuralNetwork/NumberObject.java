@@ -70,6 +70,7 @@ public class NumberObject {
              }
              try{
             	 actualNumber = Integer.parseInt(bufferedReader.readLine());
+            	
              }catch(Exception e){
             	 actualNumber = -1;
              }        
