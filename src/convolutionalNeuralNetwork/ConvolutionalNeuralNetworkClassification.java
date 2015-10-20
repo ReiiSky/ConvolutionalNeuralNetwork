@@ -29,10 +29,10 @@ public class ConvolutionalNeuralNetworkClassification {
 	private int learningTimes;
 	private int trainingSetSize;
 	private int testSetSize;
-	private double learningRate;
 	private int runSize;
 	
-	private int actualNumber;
+	private int disiredNumber;
+	private double[] disiredOutput;
 	private int guessNumber;
 	
 	private String weightSavePath = "d:\\PJ1\\part2\\data\\";
@@ -45,7 +45,6 @@ public class ConvolutionalNeuralNetworkClassification {
 		this.trainingSetSize = 60000;
 		this.testSetSize = 10000;
 		this.runSize = 799;
-		this.learningRate = 0.1;	
 		initPara();
 		generateLayers();
 	}	
@@ -85,10 +84,10 @@ public class ConvolutionalNeuralNetworkClassification {
 			setNowCase(numberObj);
 			calculateOutput();
 			guessNumberAndSaveAnswer();
-			if(actualNumber == guessNumber){
+			if(disiredNumber == guessNumber){
 				correct++;
 			}
-			LogRecord.logRecord("[Test " + i + "] Guess Result:" + guessNumber + " Actual Result：" + actualNumber,logPath);
+			LogRecord.logRecord("[Test " + i + "] Guess Result:" + guessNumber + " Actual Result：" + disiredNumber,logPath);
 		}
 		LogRecord.logRecord("[Tip] Testing procedure complete",logPath);
 		LogRecord.logRecord("[End] Correct rate：" + correct + " / " + testSetSize,logPath);
@@ -232,7 +231,11 @@ public class ConvolutionalNeuralNetworkClassification {
 				inputLayer[0].setNumber(i+2, j+2, nb.getValue(i, j));
 			}
 		}
-		actualNumber = nb.getActualNumber();
+		disiredNumber = nb.getActualNumber();
+		for(int i = 0;i < 10;i++){
+			disiredOutput[i] = 0;
+		}
+		disiredOutput[disiredNumber] = 1;
 	}
 	
 	private void calculateOutput(){
@@ -260,14 +263,16 @@ public class ConvolutionalNeuralNetworkClassification {
 			}
 		}
 		//计算第三层：卷积层
-		//此处策略需要修正
 		for(int i = 0;i < 16;i++){
 			for(int j = 0;j < 10;j++){
 				for(int k = 0;k < 10;k++){
 					int j2 = j + 2;
 					int k2 = k + 2;
-					temp = s2Layer[i].calculateConvolutionalPoint(j2, k2, ck3[i]);
-					c3Layer[i].setNumber(j, k, temp);
+					temp = 0;
+					for(int m = 0; m < 6;m++){
+						temp += s2Layer[m].calculateConvolutionalPoint(j2, k2, ck3[i]);
+					}
+					c3Layer[i].setNumber(j, k, temp/6);
 				}
 			}
 		}
@@ -283,14 +288,15 @@ public class ConvolutionalNeuralNetworkClassification {
 			}
 		}
 		//计算第五层：卷积层，同时也是bp网输入层
-		//此处策略需要修正
 		for(int i = 0;i < 120;i++){
 			for(int j = 0;j < 1;j++){
 				for(int k = 0;k < 1;k++){
 					int j2 = j + 2;
 					int k2 = k + 2;
-					temp = s4Layer[i].calculateConvolutionalPoint(j2, k2, ck5[i]);
-					c5Layer[i].setNumber(j, k, temp);
+					for(int m = 0; m < 16;m++){
+						temp += s4Layer[m].calculateConvolutionalPoint(j2, k2, ck5[i]);
+					}			
+					c5Layer[i].setNumber(j, k, temp/16);
 				}
 			}
 		}
@@ -314,8 +320,6 @@ public class ConvolutionalNeuralNetworkClassification {
 		}
 	}
 
-
-	
 	private void guessNumberAndSaveAnswer() throws IOException{
 		double max = 0;
 		for(int i = 0;i < outputLayer.length;i++){

@@ -15,7 +15,6 @@ public class IHFormulaParameter implements Serializable{
 	private double bias;
 	private int index;
 	private double[] change;
-	
 
 	public IHFormulaParameter(int length,double[] paraSet,double bias,int index){
 		this.length = length;
